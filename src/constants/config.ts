@@ -1,7 +1,7 @@
 import { config } from 'dotenv'
 import fs from 'fs'
 import path from 'path'
-const env = process.env.NODE_ENV
+// const env = process.env.NODE_ENV
 // const envFilename = `.env.${env}`
 // if (!env) {
 //   console.log(`Bạn chưa cung cấp biến môi trường NODE_ENV (ví dụ: development, production)`)
@@ -31,7 +31,7 @@ export const envConfig = {
   // dbHashtagsCollection: process.env.DB_HASHTAGS_COLLECTION as string,
   // dbBookmarksCollection: process.env.DB_BOOKMARKS_COLLECTION as string,
   // dbLikesCollection: process.env.DB_LIKES_COLLECTION as string,
-  // dbRefreshTokensCollection: process.env.DB_REFRESH_TOKENS_COLLECTION as string,
+  dbRefreshTokensCollection: process.env.DB_REFRESH_TOKENS_COLLECTION as string,
   // dbFollowersCollection: process.env.DB_FOLLOWERS_COLLECTION as string,
   // dbVideoStatusCollection: process.env.DB_VIDEO_STATUS_COLLECTION as string,
   // dbConversationCollection: process.env.DB_CONVERSATION_COLLECTION as string,
@@ -41,7 +41,7 @@ export const envConfig = {
   // jwtSecretEmailVerifyToken: process.env.JWT_SECRET_EMAIL_VERIFY_TOKEN as string,
   // jwtSecretForgotPasswordToken: process.env.JWT_SECRET_FORGOT_PASSWORD_TOKEN as string,
   refreshTokenExpiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN as string,
-  accessTokenExpiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN as string,
+  accessTokenExpiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN as string
   // emailVerifyTokenExpiresIn: process.env.EMAIL_VERIFY_TOKEN_EXPIRES_IN as string,
   // forgotPasswordTokenExpiresIn: process.env.FORGOT_PASSWORD_TOKEN_EXPIRES_IN as string,
   // googleClientId: process.env.GOOGLE_CLIENT_ID as string,
