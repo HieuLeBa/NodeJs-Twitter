@@ -7,6 +7,7 @@ import { TokenType, UserVerifyStatus } from '~/constants/enums'
 import { envConfig } from '~/constants/config'
 import RefreshToken from '~/models/schemas/RefreshToken.schema'
 import { ObjectId } from 'mongodb'
+import { USERS_MESSAGES } from '~/constants/messages'
 
 class UsersService {
   private signAccessToken(user_id: string) {
@@ -68,6 +69,13 @@ class UsersService {
     return {
       access_token,
       refresh_token
+    }
+  }
+
+  async logout(refresh_token: string) {
+    const result = await databaseService.refreshTokens.deleteOne({ token: refresh_token })
+    return {
+      message: USERS_MESSAGES.LOGOUT_SUCCESS
     }
   }
 }
