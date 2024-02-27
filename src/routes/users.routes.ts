@@ -7,6 +7,8 @@ import {
   refreshTokenValidator,
   registerValidator,
   resetPasswordValidator,
+  updateMeValidator,
+  verifiedUserValidator,
   verifyForgotPasswordTokenValidator
 } from '~/middlewares/users.middlewares'
 import { Request, Response, NextFunction } from 'express'
@@ -18,6 +20,7 @@ import {
   registerController,
   resendVerifyEmailController,
   resetPasswordController,
+  updateMeController,
   verifyEmailController,
   verifyForgotPasswordController
 } from '~/controllers/users.controller'
@@ -45,23 +48,23 @@ usersRouter.post('/reset-password', resetPasswordValidator, wrapRequestHandler(r
 
 usersRouter.get('/me', accessTokenValidator, wrapRequestHandler(getMeController))
 
-// usersRouter.patch(
-//   '/me',
-//   accessTokenValidator,
-//   verifiedUserValidator,
-//   updateMeValidator,
-//   filterMiddleware<UpdateMeReqBody>([
-//     'name',
-//     'date_of_birth',
-//     'bio',
-//     'location',
-//     'website',
-//     'username',
-//     'avatar',
-//     'cover_photo'
-//   ]),
-//   wrapRequestHandler(updateMeController)
-// )
+usersRouter.patch(
+  '/me',
+  accessTokenValidator,
+  verifiedUserValidator,
+  updateMeValidator,
+  // filterMiddleware<UpdateMeReqBody>([
+  //   'name',
+  //   'date_of_birth',
+  //   'bio',
+  //   'location',
+  //   'website',
+  //   'username',
+  //   'avatar',
+  //   'cover_photo'
+  // ]),
+  wrapRequestHandler(updateMeController)
+)
 
 // usersRouter.get('/:username', wrapRequestHandler(getProfileController))
 
