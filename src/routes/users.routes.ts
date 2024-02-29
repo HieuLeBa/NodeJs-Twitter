@@ -31,7 +31,7 @@ import {
   updateMeController,
   verifyEmailController,
   verifyForgotPasswordController
-} from '~/controllers/users.controller'
+} from '~/controllers/users.controllers'
 import { wrapRequestHandler } from '~/utils/handlers'
 import { filterMiddleware } from '~/middlewares/common.middlewares'
 import { UpdateMeReqBody } from '~/models/requests/User.requests'
