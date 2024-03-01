@@ -1,7 +1,7 @@
 import { config } from 'dotenv'
 import fs from 'fs'
 import path from 'path'
-// const env = process.env.NODE_ENV
+const env = process.env.NODE_ENV
 // const envFilename = `.env.${env}`
 // if (!env) {
 //   console.log(`Bạn chưa cung cấp biến môi trường NODE_ENV (ví dụ: development, production)`)
@@ -18,7 +18,7 @@ import path from 'path'
 // config({
 //   path: envFilename
 // })
-// export const isProduction = env === 'production'
+export const isProduction = env === 'production'
 
 export const envConfig = {
   port: (process.env.PORT as string) || 4000,
