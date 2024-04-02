@@ -7,6 +7,7 @@ import { initFolder } from './utils/file'
 import staticRouter from './routes/static.routes'
 import { UPLOAD_VIDEO_DIR } from './constants/dir'
 import cors from 'cors'
+import tweetsRouter from './routes/tweets.route'
 
 databaseService.connect()
 // .then(() => {
@@ -25,6 +26,7 @@ initFolder()
 app.use(express.json())
 app.use('/users', userRouter)
 app.use('/medias', mediasRouter)
+app.use('/tweets', tweetsRouter)
 app.use('/static', staticRouter)
 app.use('/static/video', express.static(UPLOAD_VIDEO_DIR))
 
