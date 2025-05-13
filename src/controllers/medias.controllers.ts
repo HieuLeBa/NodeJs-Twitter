@@ -1,29 +1,18 @@
 import { NextFunction, Request, Response } from 'express'
 import path from 'path'
+import { UPLOAD_IMAGE_DIR, UPLOAD_VIDEO_DIR } from '~/constants/dir'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { USERS_MESSAGES } from '~/constants/messages'
+import mediasService from '~/services/medias.services'
 import fs from 'fs'
 import mime from 'mime'
-import formidable from 'formidable'
-import { UPLOAD_IMAGE_DIR, UPLOAD_VIDEO_DIR, UPLOAD_VIDEO_TEMP_DIR } from '~/constants/dir'
-import mediasService from '~/services/medias.services'
 import { sendFileFromS3 } from '~/utils/s3'
 
 export const uploadImageController = async (req: Request, res: Response, next: NextFunction) => {
-  // const formidable = (await import('formidable')).default
-  const form = formidable({
-    uploadDir: path.resolve('uploads'),
-    maxFiles: 1,
-    keepExtensions: true,
-    maxFileSize: 300 * 1024
-  })
-  form.parse(req, (err, fields, files) => {
-    if (err) {
-      throw err
-    }
-    res.json({
-      message: 'upload image successfully'
-    })
+  const url = await mediasService.uploadImage(req)
+  return res.json({
+    message: USERS_MESSAGES.UPLOAD_SUCCESS,
+    result: url
   })
 }
 
@@ -35,6 +24,23 @@ export const uploadVideoController = async (req: Request, res: Response, next: N
   })
 }
 
+export const uploadVideoHLSController = async (req: Request, res: Response, next: NextFunction) => {
+  const url = await mediasService.uploadVideoHLS(req)
+  return res.json({
+    message: USERS_MESSAGES.UPLOAD_SUCCESS,
+    result: url
+  })
+}
+
+export const videoStatusController = async (req: Request, res: Response, next: NextFunction) => {
+  const { id } = req.params
+  const result = await mediasService.getVideoStatus(id as string)
+  return res.json({
+    message: USERS_MESSAGES.GET_VIDEO_STATUS_SUCCESS,
+    result: result
+  })
+}
+
 export const serveImageController = (req: Request, res: Response, next: NextFunction) => {
   const { name } = req.params
   return res.sendFile(path.resolve(UPLOAD_IMAGE_DIR, name), (err) => {
@@ -42,6 +48,26 @@ export const serveImageController = (req: Request, res: Response, next: NextFunc
       res.status((err as any).status).send('Not found')
     }
   })
+}
+export const serveM3u8Controller = (req: Request, res: Response, next: NextFunction) => {
+  const { id } = req.params
+  sendFileFromS3(res, `videos-hls/${id}/master.m3u8`)
+  // return res.sendFile(path.resolve(UPLOAD_VIDEO_DIR, id, 'master.m3u8'), (err) => {
+  //   if (err) {
+  //     res.status((err as any).status).send('Not found')
+  //   }
+  // })
+}
+
+export const serveSegmentController = (req: Request, res: Response, next: NextFunction) => {
+  const { id, v, segment } = req.params
+  sendFileFromS3(res, `videos-hls/${id}/${v}/${segment}`)
+
+  // return res.sendFile(path.resolve(UPLOAD_VIDEO_DIR, id, v, segment), (err) => {
+  //   if (err) {
+  //     res.status((err as any).status).send('Not found')
+  //   }
+  // })
 }
 
 export const serveVideoStreamController = (req: Request, res: Response, next: NextFunction) => {
@@ -95,52 +121,4 @@ export const serveVideoStreamController = (req: Request, res: Response, next: Ne
   res.writeHead(HTTP_STATUS.PARTIAL_CONTENT, headers)
   const videoSteams = fs.createReadStream(videoPath, { start, end })
   videoSteams.pipe(res)
-}
-
-export const uploadVideoHLSController = async (req: Request, res: Response, next: NextFunction) => {
-  const url = await mediasService.uploadVideoHLS(req)
-  return res.json({
-    message: USERS_MESSAGES.UPLOAD_SUCCESS,
-    result: url
-  })
-}
-
-export const serveM3u8Controller = (req: Request, res: Response, next: NextFunction) => {
-  const { id } = req.params
-  const realId = id.replace('.m3u8', '')
-  return res.sendFile(path.resolve(UPLOAD_VIDEO_DIR, id, 'master.m3u8'), (err) => {
-    if (err) {
-      res.status((err as any).status).send('Not found')
-    }
-  })
-  // sendFileFromS3(res, `videos-hls/${id}/master.m3u8`)
-  // return res.sendFile(path.resolve(UPLOAD_VIDEO_DIR, id, 'master.m3u8'), (err) => {
-  //   if (err) {
-  //     res.status((err as any).status).send('Not found')
-  //   }
-  // })
-}
-
-export const serveSegmentController = (req: Request, res: Response, next: NextFunction) => {
-  const { id, v, segment } = req.params
-  return res.sendFile(path.resolve(UPLOAD_VIDEO_DIR, id, v, segment), (err) => {
-    if (err) {
-      res.status((err as any).status).send('Not found')
-    }
-  })
-  // sendFileFromS3(res, `videos-hls/${id}/master.m3u8`)
-  // return res.sendFile(path.resolve(UPLOAD_VIDEO_DIR, id, 'master.m3u8'), (err) => {
-  //   if (err) {
-  //     res.status((err as any).status).send('Not found')
-  //   }
-  // })
-}
-
-export const videoStatusController = async (req: Request, res: Response, next: NextFunction) => {
-  const { id } = req.params
-  const result = await mediasService.getVideoStatus(id as string)
-  return res.json({
-    message: USERS_MESSAGES.GET_VIDEO_STATUS_SUCCESS,
-    result: result
-  })
 }
