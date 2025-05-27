@@ -4,7 +4,6 @@ import { TweetRequestBody } from '~/models/requests/Tweet.requests'
 import Hashtag from '~/models/schemas/Hashtag.schema'
 import Tweet from '~/models/schemas/Tweet.schema'
 import databaseService from '~/services/database.services'
-import usersService from '~/services/users.services'
 
 class TweetsService {
   async checkAndCreateHashtags(hashtags: string[]) {
